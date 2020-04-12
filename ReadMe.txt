@@ -1,5 +1,6 @@
 ========================================================================
     CONSOLE APPLICATION : AquaDig Remake 1 Project Overview
+    ``````Author's note below`````
 ========================================================================
 
 AppWizard has created this AquaDig Remake 1 application for you.
