@@ -32,10 +32,7 @@ StdAfx.h, StdAfx.cpp
     named AquaDig Remake 1.pch and a precompiled types file named StdAfx.obj.
 
 /////////////////////////////////////////////////////////////////////////////
-Other notes by author:
-
-Release Date: 04-12-2020: v1.0 rev1.1
--First version: include Background.png.
+Other notes:
 
 AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
