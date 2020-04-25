@@ -13,6 +13,7 @@ using namespace std;
 
 #include "SDL_CommonFunc.h"
 #include "SDL_BaseObj.h"
+#include "SDL_OceanMap.h"
 
 BaseObject gBackground;
 
@@ -38,7 +39,8 @@ bool initSDL()
 	else
 	{
 		gScreen = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-		if (gScreen == NULL) //important!
+		if (gScreen == NULL) //important!!! Lack of "=" symbol can make this code error.
+
 		{
 			cout << "SDL Error " << SDL_GetError() << endl;
 			success = false;
@@ -98,6 +100,12 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	OceanMap game_map;
+	game_map.LoadMap("map/map01.dat");
+	game_map.loadTiles(gScreen);
+
+
+
 	bool quitSDL = false;
 	SDL_Event gEvent;
 	while (!quitSDL)
@@ -113,6 +121,7 @@ int main(int argc, char* argv[])
 		SDL_RenderClear(gScreen);
 
 		gBackground.Render(gScreen, NULL);
+		game_map.DrawMap(gScreen);
 
 		SDL_RenderPresent(gScreen);
 	}
