@@ -19,9 +19,10 @@ public:
 	OceanMap() { ; }
 	~OceanMap() { ; }
 
-	void LoadMap(char* name );
-	void loadTiles( SDL_Renderer* screen );
+	void LoadMap(char* name);
+	void loadTiles(SDL_Renderer* screen);
 	void DrawMap(SDL_Renderer* screen);
+	Map getMap() const { return gameMap; };
 
 private:
 	Map gameMap;

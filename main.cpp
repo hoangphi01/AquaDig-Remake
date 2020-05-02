@@ -14,8 +14,10 @@ using namespace std;
 #include "SDL_CommonFunc.h"
 #include "SDL_BaseObj.h"
 #include "SDL_OceanMap.h"
+#include "SDL_Player.h"
 
 BaseObject gBackground;
+
 
 bool initSDL()
 {
@@ -24,7 +26,6 @@ bool initSDL()
 	{
 		cout << "SDL Error " << SDL_GetError() << endl;
 		success = false;
-		return false;
 	}
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	gWindow = SDL_CreateWindow( "AquaDig Remake v1.0", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -34,17 +35,14 @@ bool initSDL()
 	{
 		cout << "SDL Error " << SDL_GetError() << endl;
 		success = false;
-		return false;
 	}
 	else
 	{
-		gScreen = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-		if (gScreen == NULL) //important!!! Lack of "=" symbol can make this code error.
-
+		gScreen = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC); //Prevent overloading CPU & GPU. DS:04.29.20
+		if (gScreen == NULL) //important!!! Lack of "=" symbol can make this code error. DS:04.15.20
 		{
 			cout << "SDL Error " << SDL_GetError() << endl;
 			success = false;
-			return false;
 		}
 		else
 		{
@@ -53,7 +51,6 @@ bool initSDL()
 			if (!(IMG_Init(imgFlags) && imgFlags))
 			{
 				success = false;
-				return false;
 			}
 			
 		}
@@ -100,11 +97,15 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+
+
 	OceanMap game_map;
 	game_map.LoadMap("map/map01.dat");
 	game_map.loadTiles(gScreen);
 
-
+	MainPlayer player_;
+	player_.LoadIMG("Image/Player/player_right.png", gScreen);
+	player_.SetClips();
 
 	bool quitSDL = false;
 	SDL_Event gEvent;
@@ -116,12 +117,19 @@ int main(int argc, char* argv[])
 			{
 				quitSDL = true;
 			}
+
+			player_.KeyboardAction(gEvent, gScreen);
 		}
 		SDL_SetRenderDrawColor(gScreen, 255, 255, 255, 255);
 		SDL_RenderClear(gScreen);
 
 		gBackground.Render(gScreen, NULL);
 		game_map.DrawMap(gScreen);
+		Map mapData = game_map.getMap();
+
+		player_.MovePlayer(mapData);
+//		player_.TouchMap(mapData);
+		player_.Show(gScreen);
 
 		SDL_RenderPresent(gScreen);
 	}

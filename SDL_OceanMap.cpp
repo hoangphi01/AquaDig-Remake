@@ -89,6 +89,7 @@ void OceanMap::DrawMap(SDL_Renderer* screen)
 	
 	for (int i = y1; i < y2; i += TILE_SIZE)
 	{
+		mapX = gameMap.startX / TILE_SIZE;
 		for (int j = x1; j < x2; j += TILE_SIZE)
 		{
 			int value = gameMap.tile[mapY][mapX];
@@ -99,6 +100,6 @@ void OceanMap::DrawMap(SDL_Renderer* screen)
 			}
 			mapX++;
 		} 
-//		mapY++; //important!!! This command line will make your code run into failure.
+		mapY++; 
 	}
 }

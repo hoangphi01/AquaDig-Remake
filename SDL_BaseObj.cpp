@@ -17,6 +17,7 @@ BaseObject::~BaseObject()
 
 bool BaseObject::LoadIMG(std::string path, SDL_Renderer* screen)
 {
+	Free(); //Remember this before debugging. Buffer overflow error. DS:04.28.20 
 	SDL_Texture* newTexture = NULL;
 
 	SDL_Surface* loadSurface = IMG_Load(path.c_str());
@@ -46,7 +47,6 @@ void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip)
 
 void BaseObject::Free()
 {
-
 	if (pObject != NULL)
 	{
 		SDL_DestroyTexture(pObject);
