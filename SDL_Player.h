@@ -6,7 +6,7 @@
 
 #define FALLING_SPEED 0.7
 #define MAX_FALLING_SPEED 10
-#define PLAYER_SPEED 0.1
+#define PLAYER_SPEED 2
 #define MAX_SURFACE 40
 
 class MainPlayer : public BaseObject

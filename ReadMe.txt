@@ -35,15 +35,19 @@ StdAfx.h, StdAfx.cpp
 /////////////////////////////////////////////////////////////////////////////
 Other notes:
 Release Date: 04-12-2020:
-v1: include background.png.
+v1: Include background.png.
 
 Release Date: 04-25-2020:
-v1.2: include map.dat, elements and bugs fixed.
+v1.2: Include map.dat, elements and bugs fixed.
 
 Release Date: 05-03-2020:
-v1.3: include showing & moving character.
+v1.3: Include showing & moving character.
 Buffer overflow error (RAM) fixed.
 Added PRESENT_VSYNC, prevented overloading (CPU) & (GPU).
+
+Release Date: 05-05-2020
+v1.3.1: Bugs & algorithms fixed. 
+Now you can use buttons to move character without crashing. 
 
 AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.

@@ -171,9 +171,10 @@ void MainPlayer::KeyboardAction(SDL_Event events, SDL_Renderer* screen)
 
 void MainPlayer::MovePlayer(Map& mapData)
 {
-	xVal = 1;
+	xVal = 0;
 	yVal = 1;
-
+//	const int playerSpeed = 2;
+	
 	if (yVal >= MAX_FALLING_SPEED)
 	{
 		yVal = MAX_FALLING_SPEED;
@@ -182,52 +183,21 @@ void MainPlayer::MovePlayer(Map& mapData)
 	
 	if (inputType.leftO == 1)
 	{
-/*		if (xPos <= 0)
-		{
-			xPos = 0;
-		}
-		else */
-//			xPos -= xVal;
-//		xVal -= PLAYER_SPEED;
-		xPos -= xVal;
-		//yVal = 0;
-
+		xVal = -PLAYER_SPEED;
 	}
 	else if (inputType.rightO == 1)
 	{
-		
-/*		if (xPos + widthFrame >= MAX_MAP_X)
-		{
-			xPos = MAX_MAP_X - widthFrame;
-		}
-		else */
-//	0		xPos += xVal;
-//		xVal += PLAYER_SPEED;
-		xPos += xVal;
-		//yVal = 0;
+		xVal = PLAYER_SPEED;
 	}
-	else if (inputType.upO == 1)
+	if (inputType.upO == 1)
 	{
-//		yPos -= 5;
-//		yVal -= PLAYER_SPEED;
-		yPos -= yVal;
-		/*if (yPos = MAX_SURFACE)
-		{
-			yPos = MAX_SURFACE;
-			xPos = 0;
-		}*/
+		yVal = -PLAYER_SPEED;
 	}
 	else if (inputType.downO == 1)
 	{
-//		yPos += 5;
-//		yVal += PLAYER_SPEED;
 		yPos += yVal;
-		//xVal = 0;
 	}
-	//xPos += xVal;
-	//yPos += yVal;
 	cout << xPos << " " << yPos << endl;
-	cout << xVal << " " << yVal << endl;
 	TouchMap(mapData);
 }
 
@@ -298,8 +268,8 @@ void MainPlayer::TouchMap(Map& mapData)
 			}
 		}
 	}
-	//xPos += xVal;
-	//yPos += yVal;
+	xPos += xVal;
+	yPos += yVal;
 
 	if (xPos < 0)
 	{
