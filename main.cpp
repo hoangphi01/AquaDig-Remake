@@ -15,9 +15,10 @@ using namespace std;
 #include "SDL_BaseObj.h"
 #include "SDL_OceanMap.h"
 #include "SDL_Player.h"
+#include "SDL_DisplayText.h"
 
 BaseObject gBackground;
-
+TTF_Font* countdownTime = NULL;
 
 bool initSDL()
 {
@@ -52,7 +53,17 @@ bool initSDL()
 			{
 				success = false;
 			}
-			
+
+			if (TTF_Init() == -1)
+			{
+				success = false;
+			}
+
+			countdownTime = TTF_OpenFont("font/PixelFont.ttf", 13);
+			if (countdownTime == NULL)
+			{
+				success = false;
+			}
 		}
 	}
 	return success;
@@ -107,6 +118,13 @@ int main(int argc, char* argv[])
 	player_.LoadIMG("Image/Player/player_right.png", gScreen);
 	player_.SetClips();
 
+	//time countdown 
+	TextShow game_time;
+	game_time.SetColor(TextShow::WHITE_TEXT);
+
+	TextShow game_point;
+	game_point.SetColor(TextShow::YELLOW_TEXT);
+
 	bool quitSDL = false;
 	SDL_Event gEvent;
 	while (!quitSDL)
@@ -124,12 +142,48 @@ int main(int argc, char* argv[])
 		SDL_RenderClear(gScreen);
 
 		gBackground.Render(gScreen, NULL);
-		game_map.DrawMap(gScreen);
+//		game_map.DrawMap(gScreen);
 		Map mapData = game_map.getMap();
 
+
+		player_.SetMapView(mapData.startX, mapData.startY);
 		player_.MovePlayer(mapData);
-//		player_.TouchMap(mapData);
 		player_.Show(gScreen);
+
+		game_map.SetMap(mapData);
+		game_map.DrawMap(gScreen);
+
+		//time
+		string timeStr = "TIME LEFT: ";
+		Uint32 timeVal = SDL_GetTicks() / 1000;
+		Uint32 valTime = 60 - timeVal;
+		if (valTime <= 0)
+		{
+			quitSDL = true;
+			break;
+		}
+		else
+		{
+			std::string strVal = std::to_string(valTime);
+			timeStr += strVal;
+
+			game_time.SetText(timeStr);
+			game_time.LoadText(countdownTime, gScreen);
+			game_time.RenderText(gScreen, SCREEN_WIDTH - 170, 50);
+			if (valTime <= 15)
+			{
+				game_time.SetColor(TextShow::RED_TEXT);
+			}
+		}
+
+		//point
+		string pointStr = "MONEY: ";
+		int moneyCount = player_.GetCoinValue();
+		std::string moneyStr = std::to_string(moneyCount);
+		pointStr += moneyStr;
+		game_point.SetText(pointStr);
+		game_point.LoadText(countdownTime, gScreen);
+		game_point.RenderText(gScreen, SCREEN_WIDTH - 170, 15);
 
 		SDL_RenderPresent(gScreen);
 	}

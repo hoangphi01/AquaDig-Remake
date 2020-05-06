@@ -19,6 +19,13 @@ MainPlayer::MainPlayer()
 	inputType.upO = 0;
 	inputType.downO = 0;
 	touchGround = false;
+	oX = 0;
+	oY = 0;
+
+	goldCount = 0;
+	silverCount = 0;
+	copperCount = 0;
+	
 }
 
 MainPlayer::~MainPlayer()
@@ -64,6 +71,21 @@ void MainPlayer::SetClips()
 	}
 }
 
+void MainPlayer::CountMoneyGold()
+{
+	goldCount++;
+}
+
+void MainPlayer::CountMoneySilver()
+{
+	silverCount++;
+}
+
+void MainPlayer::CountMoneyCopper()
+{
+	copperCount++;
+}
+
 void MainPlayer::Show(SDL_Renderer* des)
 {
 	if (statusS == SWIM_UP)
@@ -97,8 +119,8 @@ void MainPlayer::Show(SDL_Renderer* des)
 		frameS = 0;
 	}
 	
-	rect_.x = xPos;
-	rect_.y = yPos;
+	rect_.x = xPos - oX;
+	rect_.y = yPos - oY;
 
 	SDL_Rect* currentClip = &frameClip[frameS];
 
@@ -197,8 +219,29 @@ void MainPlayer::MovePlayer(Map& mapData)
 	{
 		yPos += yVal;
 	}
-	cout << xPos << " " << yPos << endl;
+//	cout << xPos << " " << yPos << endl;
+
 	TouchMap(mapData);
+	CenterPlayer(mapData);
+}
+
+void MainPlayer::CenterPlayer(Map& mapData)
+{
+	mapData.startY = yPos - (SCREEN_HEIGHT / 2);
+	if (mapData.startY < 0){
+		mapData.startY = 0;
+	}
+	else if (mapData.startY + SCREEN_HEIGHT >= mapData.maxY){
+		mapData.startY = mapData.maxY - SCREEN_HEIGHT;
+	}
+
+	mapData.startX = xPos - (SCREEN_WIDTH / 2);
+	if (mapData.startX < 0){
+		mapData.startX = 0;
+	}
+	else if (mapData.startX + SCREEN_WIDTH >= mapData.maxX){
+		mapData.startX = mapData.maxX - SCREEN_WIDTH;
+	}
 }
 
 void MainPlayer::TouchMap(Map& mapData)
@@ -220,23 +263,68 @@ void MainPlayer::TouchMap(Map& mapData)
 
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
 	{
+		int y1x2Val = mapData.tile[y1][x2];
+		int y2x2Val = mapData.tile[y2][x2];
 		if (xVal > 0)
 		{
-			if (mapData.tile[y1][x2] != BLANK_TILE || mapData.tile[y2][x2] != BLANK_TILE)
+			if (y1x2Val == MONEY_GOLD && y2x2Val == MONEY_GOLD)
 			{
-				xPos = x2 * TILE_SIZE;
-				xPos -= widthFrame + 1;
-				xVal = 0;
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				cout << y1x2Val << " " << y2x2Val << endl;
+				CountMoneyGold();
+			}
+			else if (y1x2Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneySilver();
+			}
+			else if (y1x2Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+			}
+			else
+			{
+				if (mapData.tile[y1][x2] != BLANK_TILE || mapData.tile[y2][x2] != BLANK_TILE)
+				{
+					xPos = x2 * TILE_SIZE;
+					xPos -= widthFrame + 1;
+					xVal = 0;
+				}
 			}
 		}
 		else if (xVal < 0)
 		{
-			if (mapData.tile[y1][x1] != BLANK_TILE || mapData.tile[y2][x1] != BLANK_TILE)
+			if (y1x2Val == MONEY_GOLD && y2x2Val == MONEY_GOLD)
 			{
-				xPos = (x1 + 1) * TILE_SIZE;
-				xVal = 0;
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyGold();
 			}
-		}
+			else if (y1x2Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneySilver();
+			}
+			else if (y1x2Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+			}
+			else
+			{
+				if (mapData.tile[y1][x1] != BLANK_TILE || mapData.tile[y2][x1] != BLANK_TILE)
+				{
+					xPos = (x1 + 1) * TILE_SIZE;
+					xVal = 0;
+				}
+			}
+		} 
 	}
 
 	//Check V
@@ -249,22 +337,66 @@ void MainPlayer::TouchMap(Map& mapData)
 
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 <= MAX_MAP_Y)
 	{
+		int y2x1Val = mapData.tile[y2][x1];
+		int y2x2Val = mapData.tile[y2][x2];
 		if (yVal > 0)
 		{
-			if (mapData.tile[y2][x1] != BLANK_TILE || mapData.tile[y2][x2] != BLANK_TILE)
+			if (y2x1Val == MONEY_GOLD && y2x2Val == MONEY_GOLD)
 			{
-				yPos = y2 * TILE_SIZE;
-				yPos -= (heightFrame + 1);
-				yVal = 0;
-				touchGround = true;
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyGold();
+			}
+			else if (y2x1Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneySilver();
+			}
+			else if (y2x1Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+			}
+			else
+			{
+				if (mapData.tile[y2][x1] != BLANK_TILE || mapData.tile[y2][x2] != BLANK_TILE)
+				{
+					yPos = y2 * TILE_SIZE;
+					yPos -= (heightFrame + 1);
+					yVal = 0;
+					touchGround = true;
+				}
 			}
 		}
 		else if (yVal < 0)
 		{
-			if (mapData.tile[y1][x1] != BLANK_TILE || mapData.tile[y1][x2] != BLANK_TILE)
+			if (y2x1Val == MONEY_GOLD && y2x2Val == MONEY_GOLD)
 			{
-				yPos = (y1 + 1) * TILE_SIZE;
-				yVal = 0;
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyGold();
+			}
+			else if (y2x1Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneySilver();
+			}
+			else if (y2x1Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+			}
+			else
+			{
+				if (mapData.tile[y1][x1] != BLANK_TILE || mapData.tile[y1][x2] != BLANK_TILE)
+				{
+					yPos = (y1 + 1) * TILE_SIZE;
+					yVal = 0;
+				}
 			}
 		}
 	}
@@ -281,6 +413,8 @@ void MainPlayer::TouchMap(Map& mapData)
 	}
 
 }
+
+
 
 
 

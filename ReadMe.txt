@@ -49,6 +49,9 @@ Release Date: 05-05-2020
 v1.3.1: Bugs & algorithms fixed. 
 Now you can use buttons to move character without crashing. 
 
+Release Date: 05-06-2020
+v1.3.3: Include Text, TTF fonts and new algorithms.
+
 AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
 

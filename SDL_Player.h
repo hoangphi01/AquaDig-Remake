@@ -30,8 +30,17 @@ public:
 
 	void MovePlayer(Map& mapData);
 	void TouchMap(Map& mapData);
-
+	void SetMapView(const int oceanX, const int oceanY) { oX = oceanX; oY = oceanY; };
+	void CenterPlayer(Map& mapData);
+	void CountMoneyGold();
+	void CountMoneySilver();
+	void CountMoneyCopper();
+	int GetCoinValue() const { return (goldCount*10 + silverCount*5 + copperCount); };
 private:
+	int goldCount = 0;
+	int silverCount = 0;
+	int copperCount = 0;
+
 	float xVal;
 	float yVal;
 
@@ -47,6 +56,9 @@ private:
 	int statusS;
 
 	bool touchGround;
+
+	int oX;
+	int oY; //luu vi tri moi de view map
 
 };
 

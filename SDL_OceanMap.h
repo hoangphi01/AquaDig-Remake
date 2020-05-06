@@ -23,6 +23,7 @@ public:
 	void loadTiles(SDL_Renderer* screen);
 	void DrawMap(SDL_Renderer* screen);
 	Map getMap() const { return gameMap; };
+	void SetMap(Map& map_data) { gameMap = map_data; };
 
 private:
 	Map gameMap;
