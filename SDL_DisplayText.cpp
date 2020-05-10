@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SDL_DisplayText.h"
+#include "SDL_BaseObj.h"
+
 
 TextShow::TextShow()
 {
@@ -11,21 +13,19 @@ TextShow::TextShow()
 
 TextShow::~TextShow()
 {
-
+	Free();
 }
  
 bool TextShow::LoadText(TTF_Font* font, SDL_Renderer* screen)
 {
+	Free();
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, strVal.c_str(), textColor);
 	if (textSurface)
 	{
 		textTexture = SDL_CreateTextureFromSurface(screen, textSurface);
 		tWidth = textSurface->w;
 		tHeight = textSurface->h;
-
-		SDL_FreeSurface(textSurface);
 	}
-
 	return textTexture != NULL;
 }
 
@@ -64,8 +64,8 @@ void TextShow::SetColor(int type)
 	}
 }
 
-void TextShow::RenderText(SDL_Renderer* screen, int xTPos, int yTPos, SDL_Rect* clip /*= NULL */, double angle /*= 0.0*/,
-	SDL_Point* center /*= NULL */, SDL_RendererFlip flip /*= SDL_FLIP_NONE*/)
+void TextShow::RenderText(SDL_Renderer* screen, int xTPos, int yTPos, SDL_Rect* clip, double angle,
+	SDL_Point* center, SDL_RendererFlip flip)
 {
 	SDL_Rect renderQuad = { xTPos, yTPos, tWidth, tHeight };
 	if (clip != NULL)

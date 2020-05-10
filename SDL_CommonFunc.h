@@ -2,6 +2,7 @@
 #define SDL_COMMON_FUNC_H_
 
 #include "stdafx.h"
+#include "SDL_BaseObj.h"
 
 #include <Windows.h>
 #include <SDL_mixer.h>
@@ -11,11 +12,17 @@
 #include <iostream>
 #include <string>
 
+
 using namespace std;
 
 static SDL_Window* gWindow = NULL;
 static SDL_Renderer* gScreen = NULL;
 static SDL_Event gEvent;
+
+//sounds
+static Mix_Chunk* gSoundCoin;
+static Mix_Music* gSoundTheme;
+
 
 //screen
 const int SCREEN_WIDTH = 800;
@@ -30,6 +37,8 @@ const int SCREEN_HEIGHT = 600;
 #define MONEY_GOLD 2
 #define MONEY_SILVER 3
 #define MONEY_COPPER 4
+
+#define MONEY_RED 5
 typedef struct Input
 {
 	int leftO;
@@ -51,5 +60,7 @@ typedef struct Map
 	char* fileName;
 };
 
+
+void loadFinal(bool &quitSDL);
 
 #endif // SDL_COMMON_FUNC_H_

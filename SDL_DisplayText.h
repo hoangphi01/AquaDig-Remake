@@ -2,6 +2,7 @@
 #define TEXT_SHOW_H_
 
 #include"SDL_CommonFunc.h"
+#include"SDL_BaseObj.h"
 
 class TextShow
 {
@@ -16,7 +17,6 @@ public:
 		YELLOW_TEXT = 2,
 	};
 
-//	bool LoadFromFile(std::string path);
 	bool LoadText(TTF_Font* font, SDL_Renderer* screen);
 	void Free();
 

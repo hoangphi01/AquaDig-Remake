@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SDL_BaseObj.h"
+#include "SDL_DisplayText.h"
 
+#include <iostream>
 BaseObject::BaseObject()
 {
 	pObject = NULL;
@@ -19,7 +21,6 @@ bool BaseObject::LoadIMG(std::string path, SDL_Renderer* screen)
 {
 	Free(); //Remember this before debugging. Buffer overflow error. DS:04.28.20 
 	SDL_Texture* newTexture = NULL;
-
 	SDL_Surface* loadSurface = IMG_Load(path.c_str());
 	if (loadSurface != NULL)
 	{
@@ -40,6 +41,7 @@ bool BaseObject::LoadIMG(std::string path, SDL_Renderer* screen)
 
 void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip)
 {
+	
 	SDL_Rect renderScreen = { rect_.x, rect_.y, rect_.w, rect_.h };
 
 	SDL_RenderCopy(des, pObject, clip, &renderScreen);

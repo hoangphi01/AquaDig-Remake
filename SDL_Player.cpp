@@ -4,6 +4,7 @@
 #include "SDL_CommonFunc.h"
 #include "SDL_BaseObj.h"
 
+
 MainPlayer::MainPlayer()
 {
 	frameS = 0;
@@ -88,7 +89,7 @@ void MainPlayer::CountMoneyCopper()
 
 void MainPlayer::Show(SDL_Renderer* des)
 {
-	if (statusS == SWIM_UP)
+    if (statusS == SWIM_UP)
 	{
 		LoadIMG("Image/Player/player_up.png", des);
 	}
@@ -191,7 +192,7 @@ void MainPlayer::KeyboardAction(SDL_Event events, SDL_Renderer* screen)
 	
 }
 
-void MainPlayer::MovePlayer(Map& mapData)
+void MainPlayer::MovePlayer(Map& mapData, Mix_Chunk* gSoundCoin, bool &quitSDL)
 {
 	xVal = 0;
 	yVal = 1;
@@ -221,7 +222,7 @@ void MainPlayer::MovePlayer(Map& mapData)
 	}
 //	cout << xPos << " " << yPos << endl;
 
-	TouchMap(mapData);
+	TouchMap(mapData, gSoundCoin, quitSDL);
 	CenterPlayer(mapData);
 }
 
@@ -244,7 +245,7 @@ void MainPlayer::CenterPlayer(Map& mapData)
 	}
 }
 
-void MainPlayer::TouchMap(Map& mapData)
+void MainPlayer::TouchMap(Map& mapData, Mix_Chunk* gSoundCoin, bool &quitSDL)
 {
 	int x1 = 0;
 	int x2 = 0;
@@ -273,18 +274,29 @@ void MainPlayer::TouchMap(Map& mapData)
 				mapData.tile[y2][x2] = 0;
 				cout << y1x2Val << " " << y2x2Val << endl;
 				CountMoneyGold();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y1x2Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
 			{
 				mapData.tile[y1][x2] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneySilver();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y1x2Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
 			{
 				mapData.tile[y1][x2] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+			}
+			else if (y1x2Val == MONEY_RED && y2x2Val == MONEY_RED)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+				loadFinal(quitSDL);
 			}
 			else
 			{
@@ -303,18 +315,29 @@ void MainPlayer::TouchMap(Map& mapData)
 				mapData.tile[y1][x2] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyGold();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y1x2Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
 			{
 				mapData.tile[y1][x2] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneySilver();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y1x2Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
 			{
 				mapData.tile[y1][x2] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+			}
+			else if (y1x2Val == MONEY_RED && y2x2Val == MONEY_RED)
+			{
+				mapData.tile[y1][x2] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+				loadFinal(quitSDL);
 			}
 			else
 			{
@@ -346,18 +369,29 @@ void MainPlayer::TouchMap(Map& mapData)
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyGold();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y2x1Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
 			{
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneySilver();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y2x1Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
 			{
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+			}
+			else if (y2x1Val == MONEY_RED && y2x2Val == MONEY_RED)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+				loadFinal(quitSDL);
 			}
 			else
 			{
@@ -377,18 +411,29 @@ void MainPlayer::TouchMap(Map& mapData)
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyGold();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y2x1Val == MONEY_SILVER && y2x2Val == MONEY_SILVER)
 			{
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneySilver();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
 			}
 			else if (y2x1Val == MONEY_COPPER && y2x2Val == MONEY_COPPER)
 			{
 				mapData.tile[y2][x1] = 0;
 				mapData.tile[y2][x2] = 0;
 				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+			}
+			else if (y2x1Val == MONEY_RED && y2x2Val == MONEY_RED)
+			{
+				mapData.tile[y2][x1] = 0;
+				mapData.tile[y2][x2] = 0;
+				CountMoneyCopper();
+				Mix_PlayChannel(-1, gSoundCoin, 0);
+				loadFinal(quitSDL);
 			}
 			else
 			{

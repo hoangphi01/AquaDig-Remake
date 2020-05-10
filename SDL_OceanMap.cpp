@@ -3,6 +3,7 @@
 #include "SDL_BaseObj.h"
 #include "SDL_CommonFunc.h"
 
+
 void OceanMap::LoadMap( char* name )
 {
 	FILE* fp = NULL;
@@ -68,7 +69,7 @@ void OceanMap::loadTiles(SDL_Renderer* screen)
 	}
 }
 
-void OceanMap::DrawMap(SDL_Renderer* screen)
+void OceanMap::DrawMap(SDL_Renderer* screen, Mix_Music* gSoundTheme)
 {
 	int x1 = 0;
 	int x2 = 0;
@@ -77,7 +78,7 @@ void OceanMap::DrawMap(SDL_Renderer* screen)
 
 	int mapX = 0;
 	int mapY = 0;
-	
+
 	mapY = gameMap.startY / TILE_SIZE;
 	y1 = (gameMap.startY%TILE_SIZE)* -1;
 	y2 = y1 + SCREEN_HEIGHT + (y1 == 0 ? 0 : TILE_SIZE);

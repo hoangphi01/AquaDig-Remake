@@ -17,8 +17,28 @@ using namespace std;
 #include "SDL_Player.h"
 #include "SDL_DisplayText.h"
 
+SDL_Surface* icon = IMG_Load("icon/AquaDigRe.png");
+
 BaseObject gBackground;
 TTF_Font* countdownTime = NULL;
+
+void FreeMusic()
+{
+	if (gSoundCoin != NULL)
+	{
+		Mix_FreeChunk(gSoundCoin);
+		gSoundCoin = NULL;
+	}
+}
+
+void FreeTheme()
+{
+	if (gSoundTheme != NULL)
+	{
+		Mix_FreeMusic(gSoundTheme);
+		gSoundTheme = NULL;
+	}
+}
 
 bool initSDL()
 {
@@ -54,6 +74,17 @@ bool initSDL()
 				success = false;
 			}
 
+			//sound
+			if (Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+			{
+				success = false;
+			}
+			
+			FreeTheme();
+			gSoundTheme = Mix_LoadMUS("Music/ThemeSound.wav");
+			FreeMusic();
+			gSoundCoin = Mix_LoadWAV("Music/CollectMoney.wav");
+
 			if (TTF_Init() == -1)
 			{
 				success = false;
@@ -81,6 +112,51 @@ bool loadBackground()
 	return true;
 }
 
+void loadAndRenderMenu(){
+	BaseObject Menu;
+
+	bool test = Menu.LoadIMG("Image/Menu.png", gScreen);
+	if (test == false)
+	{
+		cout << "SDL Error " << SDL_GetError() << endl;
+	}
+	Menu.Render(gScreen, NULL);
+	SDL_RenderPresent(gScreen);
+	SDL_Delay(3000);
+}
+
+void loadGameOver(){
+	BaseObject GameOver;
+
+	bool test = GameOver.LoadIMG("Image/GameOver.png", gScreen);
+	if (test == false)
+	{
+		cout << "SDL Error " << SDL_GetError() << endl;
+	}
+	GameOver.Render(gScreen, NULL);
+	SDL_RenderPresent(gScreen);
+	SDL_Delay(2000);
+}
+
+void loadFinal(bool &quitSDL){
+	BaseObject Final;
+
+	bool test = Final.LoadIMG("Image/Final.png", gScreen);
+	if (test == false)
+	{
+		cout << "SDL Error " << SDL_GetError() << endl;
+	}
+	Final.Render(gScreen, NULL);
+	SDL_RenderPresent(gScreen);
+	SDL_Delay(5000);
+	quitSDL = true;
+}
+
+void loadIcon()
+{
+	SDL_SetWindowIcon(gWindow, icon);
+}
+
 void close()
 {
 	gBackground.Free();
@@ -95,38 +171,44 @@ void close()
 	SDL_Quit();
 }
 
-int main(int argc, char* argv[])
+Uint32 playGame(bool &playAgain, Uint32 totalTime)
 {
-	if (initSDL() == false)
-	{
-		cout << "SDL Error " << SDL_GetError() << endl;
-		return -1;
-	}
-	if (loadBackground() == false)
-	{
-		cout << "SDL Error " << SDL_GetError() << endl;
-		return -1;
-	}
+	
+	bool quitSDL = false;
 
+	loadIcon();
+	loadAndRenderMenu();
+	loadBackground();
 
+	//play theme
+	Mix_PlayMusic(gSoundTheme, -1);
 
+	//load map
 	OceanMap game_map;
 	game_map.LoadMap("map/map01.dat");
 	game_map.loadTiles(gScreen);
 
+	//load player
 	MainPlayer player_;
 	player_.LoadIMG("Image/Player/player_right.png", gScreen);
 	player_.SetClips();
+
+	//show text
+	TextShow game_point;
+	game_point.SetColor(TextShow::YELLOW_TEXT);
 
 	//time countdown 
 	TextShow game_time;
 	game_time.SetColor(TextShow::WHITE_TEXT);
 
-	TextShow game_point;
-	game_point.SetColor(TextShow::YELLOW_TEXT);
+	Uint32 prevMoney = 0;
+	Uint32 startTime = 185;
+	Uint32 timeVal;
 
-	bool quitSDL = false;
+	
 	SDL_Event gEvent;
+
+
 	while (!quitSDL)
 	{
 		while (SDL_PollEvent(&gEvent) != 0)
@@ -138,6 +220,7 @@ int main(int argc, char* argv[])
 
 			player_.KeyboardAction(gEvent, gScreen);
 		}
+
 		SDL_SetRenderDrawColor(gScreen, 255, 255, 255, 255);
 		SDL_RenderClear(gScreen);
 
@@ -147,34 +230,12 @@ int main(int argc, char* argv[])
 
 
 		player_.SetMapView(mapData.startX, mapData.startY);
-		player_.MovePlayer(mapData);
+		player_.MovePlayer(mapData, gSoundCoin, quitSDL);
 		player_.Show(gScreen);
 
 		game_map.SetMap(mapData);
-		game_map.DrawMap(gScreen);
+		game_map.DrawMap(gScreen, gSoundTheme);
 
-		//time
-		string timeStr = "TIME LEFT: ";
-		Uint32 timeVal = SDL_GetTicks() / 1000;
-		Uint32 valTime = 60 - timeVal;
-		if (valTime <= 0)
-		{
-			quitSDL = true;
-			break;
-		}
-		else
-		{
-			std::string strVal = std::to_string(valTime);
-			timeStr += strVal;
-
-			game_time.SetText(timeStr);
-			game_time.LoadText(countdownTime, gScreen);
-			game_time.RenderText(gScreen, SCREEN_WIDTH - 170, 50);
-			if (valTime <= 15)
-			{
-				game_time.SetColor(TextShow::RED_TEXT);
-			}
-		}
 
 		//point
 		string pointStr = "MONEY: ";
@@ -185,10 +246,67 @@ int main(int argc, char* argv[])
 		game_point.LoadText(countdownTime, gScreen);
 		game_point.RenderText(gScreen, SCREEN_WIDTH - 170, 15);
 
+		//time
+		string timeStr = "TIME LEFT: ";
+		timeVal = SDL_GetTicks() / 1000 - totalTime;
+		Uint32 valTime = startTime - timeVal;
+
+		if (moneyCount - prevMoney >= 50)
+		{
+			prevMoney += moneyCount - prevMoney;
+			startTime += 10;
+		}
+		else
+		{
+			if (valTime <= 15)
+			{
+				game_time.SetColor(TextShow::RED_TEXT);
+			}
+			if (valTime <= 0)
+			{
+				loadGameOver();
+				playAgain = true;
+				quitSDL = true;
+//				break;
+			}
+
+			std::string strVal = std::to_string(valTime);
+			timeStr += strVal;
+
+
+			game_time.SetText(timeStr);
+			game_time.LoadText(countdownTime, gScreen);
+			game_time.RenderText(gScreen, SCREEN_WIDTH - 170, 50);
+
+
+		}
+
 		SDL_RenderPresent(gScreen);
+	}
+	cout << timeVal << endl;
+	return timeVal;
+}
+
+int main(int argc, char* argv[])
+{
+	if (initSDL() == false)
+	{
+		cout << "SDL Error " << SDL_GetError() << endl;
+		return -1;
+	}
+
+	Uint32 totalTime = 0;
+	bool playAgain = true;
+	while (playAgain) {
+		playAgain = false;
+		totalTime += playGame(playAgain, totalTime);
+		cout << totalTime << endl;
 	}
 
 	close();
+
 	return 0;
 }
+
+
 
