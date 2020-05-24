@@ -55,6 +55,22 @@ v1.3.3: Include Text, TTF fonts and new algorithms.
 Release Date: 05-10-2020
 v1.4 beta: BIG UPDATE! Include musics, gameplay and more!
 
+Release Date: 05-20-2020
+v1.5:
+Map fixed, add elements and bugs fixed.
+
+Release Date: 05-25-2020
+v1.5.1:
+Information about my game:
+This game is open-source, non-commercial, and anyone can download, edit, reuse without any permission. 
+The software was written by me, with references from:
+
+Reference source 1: LazyFoo's Tutorial (initSDL, Game-Loop, Texture load, Player with SpriteSheet load, Musics, Text)
+Reference source 2: Phattrienphanmem123az's Tutorial (Map algorithm, Collision Detection) 
+Reference source 3: Tran Thi Minh Chau's Tutorial (Way to organize, sort .h and .cpp files)  
+05-2020
+
+***** THE END *****
 AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
 

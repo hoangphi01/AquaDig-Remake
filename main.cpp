@@ -1,4 +1,11 @@
-﻿// AquaDig Remake 1.cpp : Defines the entry point for the console application.
+﻿//The software was written by me, with references from :
+
+//Reference source 1 : LazyFoo's Tutorial (initSDL, Game-Loop, Texture load, Player with SpriteSheet load, Musics, Text)
+//Reference source 2 : Phattrienphanmem123az's Tutorial (Map algorithm, Collision Detection) 
+//Reference source 3 : Tran Thi Minh Chau's Tutorial (Way to organize, sort .h and .cpp files)  
+//05 - 2020
+
+// AquaDig Remake 1.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -17,11 +24,16 @@ using namespace std;
 #include "SDL_Player.h"
 #include "SDL_DisplayText.h"
 
+//Load Icon
 SDL_Surface* icon = IMG_Load("icon/AquaDigRe.png");
 
+//Create Background
 BaseObject gBackground;
+
+//Fonts
 TTF_Font* countdownTime = NULL;
 
+//Free Musics
 void FreeMusic()
 {
 	if (gSoundCoin != NULL)
@@ -31,6 +43,7 @@ void FreeMusic()
 	}
 }
 
+//Free Theme Musics
 void FreeTheme()
 {
 	if (gSoundTheme != NULL)
@@ -40,6 +53,7 @@ void FreeTheme()
 	}
 }
 
+//Init SDL
 bool initSDL()
 {
 	bool success = true;
@@ -122,7 +136,7 @@ void loadAndRenderMenu(){
 	}
 	Menu.Render(gScreen, NULL);
 	SDL_RenderPresent(gScreen);
-	SDL_Delay(3000);
+	SDL_Delay(5000);
 }
 
 void loadGameOver(){
@@ -295,6 +309,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	//Game Loop
 	Uint32 totalTime = 0;
 	bool playAgain = true;
 	while (playAgain) {
@@ -302,6 +317,7 @@ int main(int argc, char* argv[])
 		totalTime += playGame(playAgain, totalTime);
 		cout << totalTime << endl;
 	}
+
 
 	close();
 
