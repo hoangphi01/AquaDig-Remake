@@ -1,4 +1,4 @@
-//The software was written by me, with references from :
+//The software was written by me, with references ideas from :
 
 //Reference source 1 : LazyFoo's Tutorial (initSDL, Game-Loop, Texture load, Player with SpriteSheet load, Musics, Text)
 //Reference source 2 : Phattrienphanmem123az's Tutorial (Map algorithm, Collision Detection) 
